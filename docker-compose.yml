@@ -1,0 +1,14 @@
+services:
+  backend:
+    image: softcat477/pweb-backend:v1.0.0
+    ports:
+      - "80:${PORT}"
+    environment:
+      - PORT=${PORT}
+      - MONGODB_URL=${MONGODB_URL}
+    healthcheck:
+      test: ["CMD", "curl", "http://localhost:${PORT}/health"]
+      interval: 2m30s
+      timeout: 15s
+      retries: 3
+      start_period: 5m
