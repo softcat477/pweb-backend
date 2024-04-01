@@ -1,8 +1,8 @@
-const mongoose = require('mongoose')
-const config = require('../utils/config')
+const mongoose = require('mongoose');
+const config = require('../utils/config');
 
-PORT = config.PORT
-DB_URL = config.MONGODB_URL
+// PORT = config.PORT
+// DB_URL = config.MONGODB_URL
 
 const projectSchema = new mongoose.Schema({
   title: {
@@ -29,7 +29,7 @@ const projectSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-})
+});
 
 projectSchema.set("toJSON", {
   transform: (document, returnedObject) => {
@@ -37,14 +37,17 @@ projectSchema.set("toJSON", {
       delete returnedObject._id
       delete returnedObject.__v
   }
-})
+});
 
-mongoose.connect(DB_URL).then(() => {
-  console.log("Connect to DB")
-}).catch(error => {
-  console.error("Failed to connect to :", DB_URL)
-})
+(async () => {
+    try {
+        await mongoose.connect(await config.DB_URL);
+        console.log("Connected to DB");
+    } catch (error) {
+        console.error("Failed to connect to DB:", error);
+    }
+})();
 
-const Project = mongoose.model("Project", projectSchema)
+const Project = mongoose.model("Project", projectSchema);
 
 module.exports = Project
