@@ -1,8 +1,16 @@
-require("dotenv").config()
+const AWS = require('aws-sdk');
 
-PORT = process.env.PORT
-MONGODB_URL = process.env.MONGODB_URL
+const ssm = new AWS.SSM({region: 'ca-central-1'});
 
-SECRET = process.env.SECRET
+const getParameter = async(name, decrypt) => {
+    const parameter = await ssm.getParameter({
+        Name: name,
+        WithDecryption: decrypt
+    }).promise();
+    return parameter.Parameter.Value;
+};
 
-module.exports = {PORT, MONGODB_URL, SECRET}
+module.exports = {
+    PORT: getParameter('PORT', false),
+    DB_URL: getParameter('MONGODB_URL', true)
+};
